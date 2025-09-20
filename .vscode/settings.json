@@ -1,3 +1,10 @@
 {
-    "liveServer.settings.port": 5501
+  "glsl-linter.validatorPath": "C:/VulkanSDK/1.4.321.1/Bin/glslangValidator.exe",
+  "glsl-linter.fileExtensions": {
+    ".fs.glsl": "frag",
+    ".vs.glsl": "vert",
+    ".frag.glsl": "frag",
+    ".vert.glsl": "vert"
+  },
+  "liveServer.settings.port": 5501
 }

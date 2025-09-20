@@ -1,10 +1,10 @@
-// The uniform variable is set up in the javascript code and the same for all vertices
 uniform vec3 remotePosition;
 uniform float xoff;
 
 void main() {
-	/* HINT: WORK WITH remotePosition HERE! */
+    // On bouge le controlleur sur l'axe de y par rapport à la position calculé 
+    // lorsqu'on apuit sur "q", "w" ou "e" / "a", "s" ou "d" .
+    vec3 translatedPosition = position + vec3(xoff, remotePosition.y, 0.0);
 
-    // Multiply each vertex by the model-view matrix and the projection matrix to get final vertex position
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(position + vec3(xoff, 0.0, 0.0), 1.0);
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( translatedPosition, 1.0);
 }

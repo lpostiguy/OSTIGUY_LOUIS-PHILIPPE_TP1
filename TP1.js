@@ -15,7 +15,15 @@ var time = { type: 'i', value: 0 };
 // FFT Texture
 const numPoints = 1024;
 const audioDataArray = new Uint8Array(numPoints);
-const fft = new THREE.DataTexture(audioDataArray, numPoints, 1, THREE.LuminanceFormat, THREE.UnsignedByteType);
+
+// Correction de l'erreur du TP:
+const fft = new THREE.DataTexture(audioDataArray, numPoints, 1, THREE.RedFormat, THREE.UnsignedByteType);
+
+// Je définie des variables qui servent à interchanger quelle amplitude de 
+// fréquence à un impact sur quelle controlleur.
+const tvChannel0 = 0
+const tvChannel1 = 1
+const tvChannel2 = 2
 
 // MATERIALS (You might need to add/modify the uniforms that are passed to the shaders.)
 // This should be the only code block that you need to modify in TP1.js, the bulk of the code should be in the glsl shaders.
@@ -24,24 +32,34 @@ var armadilloMaterial = new THREE.ShaderMaterial({
 	uniforms: {
 		time: time,
 		fft: { type: 't', value: fft },
+		tvChannel0: { value: tvChannel0 },
+		tvChannel1: { value: tvChannel1 },
+		tvChannel2: { value: tvChannel2 },
+		intensity0: remotePosition0,
+		intensity1: remotePosition1,
+		intensity2: remotePosition2,
 	}
 });
+
 var remoteMaterial0 = new THREE.ShaderMaterial({
 	uniforms: {
 		xoff: { value: -4.0 },
 		remotePosition: remotePosition0,
+		tvChannel: { value: tvChannel0 },
 	}
 });
 var remoteMaterial1 = new THREE.ShaderMaterial({
 	uniforms: {
 		xoff: { value: 0.0 },
 		remotePosition: remotePosition1,
+		tvChannel: { value: tvChannel1 },
 	}
 });
 var remoteMaterial2 = new THREE.ShaderMaterial({
 	uniforms: {
 		xoff: { value: 4.0 },
 		remotePosition: remotePosition2,
+		tvChannel: { value: tvChannel2 },
 	}
 });
 

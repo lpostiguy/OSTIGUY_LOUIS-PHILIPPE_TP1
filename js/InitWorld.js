@@ -13,18 +13,18 @@ function addToScene(obj) {
 function createWorld(scene) {
 	scene.add(worldFrame);
 
-	const light = new THREE.DirectionalLight( 0xffffff, 1);
-	light.position.set( 0, 10, 0 );
+	const light = new THREE.DirectionalLight(0xffffff, 1);
+	light.position.set(0, 10, 0);
 	light.castShadow = true;
-	light.shadow.camera = new THREE.OrthographicCamera( -5, 5, 5, -5, 0.5, 1000 );
-	light.shadow.mapSize.width = 2048*1;
-	light.shadow.mapSize.height = 2048*1;
+	light.shadow.camera = new THREE.OrthographicCamera(-5, 5, 5, -5, 0.5, 1000);
+	light.shadow.mapSize.width = 2048 * 1;
+	light.shadow.mapSize.height = 2048 * 1;
 	addToScene(light);
 
-	const alight = new THREE.AmbientLight( 0x404040 );
+	const alight = new THREE.AmbientLight(0x404040);
 	addToScene(alight);
 
-	const hlight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 0.5 );
+	const hlight = new THREE.HemisphereLight(0xffffbb, 0x080820, 0.5);
 	addToScene(hlight);
 
 	// FLOOR
@@ -32,7 +32,7 @@ function createWorld(scene) {
 	floorTexture.wrapS = floorTexture.wrapT = THREE.RepeatWrapping;
 	floorTexture.repeat.set(1, 1);
 
-	var floorMaterial = new THREE.MeshBasicMaterial({ map: floorTexture, side: THREE.DoubleSide});
+	var floorMaterial = new THREE.MeshBasicMaterial({ map: floorTexture, side: THREE.DoubleSide });
 	var floorGeometry = new THREE.PlaneGeometry(30, 30);
 	var floor = new THREE.Mesh(floorGeometry, floorMaterial);
 	floor.receiveShadow = true;
@@ -41,8 +41,8 @@ function createWorld(scene) {
 	addToScene(floor);
 
 	var displayScreenGeometry = new THREE.CylinderGeometry(5, 5, 10, 32);
-	var displayMaterial = new THREE.MeshBasicMaterial({color: 0xffff00, transparent: true, opacity: 0.2});
-	var displayObject = new THREE.Mesh(displayScreenGeometry,displayMaterial);
+	var displayMaterial = new THREE.MeshBasicMaterial({ color: 0xffff00, transparent: true, opacity: 0.0 });
+	var displayObject = new THREE.Mesh(displayScreenGeometry, displayMaterial);
 	displayObject.position.x = 0;
 	displayObject.position.y = 5;
 	addToScene(displayObject);
@@ -53,7 +53,7 @@ function createWorld(scene) {
 	return worldFrame;
 }
 
-renderer.setClearColor( 0x87CEEB, 1 );
+renderer.setClearColor(0x87CEEB, 1);
 renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 renderer.shadowMap.enabled = true;
 
