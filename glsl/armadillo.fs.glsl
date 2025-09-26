@@ -14,7 +14,7 @@ void main() {
 
   // Afin d'accéder à l'amplitude de la transformation de fourrier
   float amplitude1 = texture(fft, vec2(x1, 1.0)).x;
-	float amplitude2 = texture(fft, vec2(x2, 1.0)).x;
+float amplitude2 = texture(fft, vec2(x2, 1.0)).x;
 
   // On limite l'amplitude entre 0.25 et 1.0 par rapport à l'intensité du 
 	// controlleur

@@ -2,8 +2,8 @@ precision highp float;
 precision highp sampler2D;
 
 out vec3 interpolatedNormal;
-uniform vec3 intensity0;
-uniform int tvChannel0;
+uniform vec3 intensity0, intensity1, intensity2;
+uniform int tvChannel0, tvChannel1, tvChannel2;
 
 uniform int time;
 uniform sampler2D fft;
@@ -12,6 +12,17 @@ uniform sampler2D fft;
 // (https://thebookofshaders.com/11/)
 float random(vec3 p) {
     return fract(sin(dot(p, vec3(127.1,311.7,74.7))) * 43758.5453123);
+}
+
+//  Retourne un vecteur aléatoire pour faire des spikes
+vec3 randomVec(vec3 p, float contrib) {
+	// On décide aléatoirement si on ajoute un spike ou pas
+	// On utilise le modulo pour avoir un résultat binaire
+	if (mod(random(p), 2.0) == 0.0) {
+		return p + normalize(normal) * contrib * 0.5;
+	}
+	// Sinon on retourne la position de base
+    return p;
 }
 
 // Fonction qui retourne une position float d'un point dans une cellule 
@@ -59,28 +70,39 @@ void main() {
 	// TVChannels, soit dynamique
 	const float FREQUENCE_MAP[3] = float[3](0.20, 0.40, 0.60);
 
-	float x = FREQUENCE_MAP[tvChannel0];
+	float x1 = FREQUENCE_MAP[tvChannel0];
+	float x2 = FREQUENCE_MAP[tvChannel1];
+	float x3 = FREQUENCE_MAP[tvChannel2];
 
 	// Afin d'accéder à l'amplitude de la transformation de fourrier
-	float amp = texture(fft, vec2(x, 0.5)).x;
+	float amp1 = texture(fft, vec2(x1, 0.5)).x;
+	float amp2 = texture(fft, vec2(x2, 0.5)).x;
+	float amp3 = texture(fft, vec2(x3, 0.5)).x;
 
 	// On limite l'amplitude entre 0.0 et 1.0 par rapport à l'intensité du 
 	// controlleur
-	float contrib = clamp(intensity0.y / 20.0 * amp, 0.0, 1.0);
+	float contrib1 = clamp(intensity0.y / 16.0 * amp1, 0.0, 1.0);
+	float contrib2 = clamp(intensity1.y / 4.0 * amp2, 0.0, 1.0);
+	float contrib3 = clamp(intensity2.y / 4.0 * amp3, 0.0, 1.0);
 
 	// On utilise la variable de temps pour ajouter du pseudo aléatoire
     float t = float(time) * 0.001;
 
-	// Utilisation de la variable de temps:
-	vec3 offset = vec3(t*0.2);
-
 	// Utilisation de la fonction noise pour créer un offset sur la géométrie 
 	// des points
-	float n = noise(position * 8.0 + offset);
+	float n = noise(position * 8.0 * t);
 
-	// Pour finir on utilise la position courrante et on y additionne le
-	// déplacement aléatoire.
-   	vec3 newPos = position + normalize(normal) * (contrib * n);
+	// On crée des vecteurs de déplacement x et y
+	vec3 xVectorDisplacement = vec3(0, contrib2, 0);
 
-    gl_Position = projectionMatrix * modelViewMatrix * vec4(newPos, 1.0);
+	vec3 yVectorDisplacement = vec3(contrib3, 0, 0);
+
+	// On utilise la position courrante et on y additionne des
+	// déplacement aléatoire x et y.
+   	vec3 newPos = position + normalize(normal) * (contrib1 * n) + xVectorDisplacement - yVectorDisplacement;
+
+	// Pour les spikes aléatoires
+	vec3 finalRandomVectorDisplacement = randomVec(newPos, contrib3);
+
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(finalRandomVectorDisplacement, 1.0);
 }
